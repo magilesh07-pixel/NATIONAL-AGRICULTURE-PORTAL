@@ -1,0 +1,265 @@
+:root {
+  --c-primary: #1B5E20; /* Official Deep Forest Green */
+  --c-secondary: #2E7D32;
+  --c-accent: #FF9933; /* Saffron */
+  --c-success: #155724;
+  --c-bg: #F4F7F4; /* Subtle greenish grey background */
+  --c-white: #FFFFFF;
+  --c-text: #212529;
+  --c-text-dim: #555555;
+  --c-border: #CFD8C1;
+  
+  --font-main: 'Roboto', sans-serif;
+  --radius: 2px;
+  --shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-main);
+  background: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.6;
+}
+
+/* ── Govt Brand Banner ── */
+.govt-banner {
+  background: #FFF;
+  border-bottom: 2px solid var(--c-accent);
+  padding: 8px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #555;
+  text-transform: uppercase;
+}
+
+/* ── Navbar ── */
+.navbar {
+  background: var(--c-primary);
+  color: white;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  padding: 0 5%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: white;
+}
+
+.nav-brand h1 { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; }
+
+.nav-links {
+  margin-left: auto;
+  display: flex;
+  gap: 15px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: var(--radius);
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link:hover, .nav-link.active {
+  background: rgba(255,255,255,0.15);
+}
+
+.nav-link svg { width: 16px; height: 16px; }
+
+/* ── Hero & Language Selector ── */
+.hero {
+  background: white;
+  padding: 3rem 5%;
+  border-bottom: 1px solid var(--c-border);
+  text-align: center;
+}
+
+.hero h1 { font-size: 2.2rem; color: var(--c-primary); margin-bottom: 1rem; }
+.hero p { color: var(--c-text-dim); margin-bottom: 2rem; }
+
+.lang-selector {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lang-btn {
+  background: #f8f9fa;
+  border: 1px solid var(--c-border);
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #444;
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+
+.lang-btn:hover { border-color: var(--c-primary); }
+.lang-btn.active {
+  background: var(--c-primary);
+  color: white;
+  border-color: var(--c-primary);
+}
+
+/* ── Chat System ── */
+.chat-container {
+  max-width: 900px;
+  margin: 30px auto;
+  background: white;
+  border: 1px solid var(--c-border);
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  background: var(--c-primary);
+  color: white;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-info h2 { font-size: 1rem; font-weight: 700; margin: 0; }
+.header-info span { font-size: 0.8rem; opacity: 0.9; }
+
+.chat-window {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+  background: #fdfdfd;
+}
+
+.msg-wrapper { display: flex; margin-bottom: 20px; gap: 15px; }
+.msg-wrapper.user { flex-direction: row-reverse; }
+
+.msg-content {
+  max-width: 80%;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  border-radius: var(--radius);
+  border: 1px solid #eee;
+}
+
+.ai .msg-content { background: white; border-left: 4px solid var(--c-accent); color: #333; }
+.user .msg-content { background: #E3F2FD; color: var(--c-primary); border-right: 4px solid var(--c-primary); }
+
+/* ── Input ── */
+.input-area {
+  padding: 20px;
+  border-top: 1px solid var(--c-border);
+  background: #f8f9fa;
+}
+
+.input-wrapper { display: flex; gap: 10px; }
+.chat-input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+}
+
+.btn-send {
+  background: var(--c-primary);
+  color: white;
+  border: none;
+  padding: 0 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ── Dashboard (Weather/etc) ── */
+.view-section { padding: 40px 5%; display: none; }
+.view-section.active { display: block; }
+
+.weather-dashboard { max-width: 900px; margin: 0 auto; }
+.weather-card-main {
+  background: white;
+  border: 1px solid var(--c-border);
+  border-top: 5px solid var(--c-primary);
+  padding: 30px;
+  margin-bottom: 25px;
+}
+
+.weather-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.w-metric { background: white; border: 1px solid #eee; padding: 15px; }
+.m-label { font-size: 0.75rem; color: #777; font-weight: 700; }
+.m-value { font-size: 1.2rem; color: var(--c-primary); font-weight: 700; }
+
+/* ── Tablet/Mobile ── */
+@media (max-width: 768px) {
+  .govt-banner { font-size: 0.65rem; }
+  .navbar { height: auto; padding: 10px; flex-direction: column; }
+  .nav-links { margin-left: 0; width: 100%; justify-content: center; margin-top: 10px; }
+  .chat-container { margin: 10px; height: 500px; }
+}
+
+/* --- Institutional Modal System --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: none; /* Hidden by default */
+    align-items: center; justify-content: center;
+    z-index: 2000;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-card {
+    background: white;
+    width: 90%; max-width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    overflow: hidden;
+    animation: zoomIn 0.2s ease-out;
+}
+@keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modal-header {
+    background: var(--c-primary);
+    color: white;
+    padding: 15px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h3 { margin: 0; font-size: 1.1rem; }
+.close-modal { background: none; border: none; color: white; fons-size: 1.5rem; cursor: pointer; }
+
+.modal-body { padding: 25px 20px; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 8px; }
+.form-group input, .form-group select {
+    width: 100%; padding: 12px;
+    border: 1px solid var(--c-border);
+    border-radius: 4px; font-size: 1rem;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    background: #f9f9f9;
+    display: flex; justify-content: flex-end; gap: 10px;
+}
+.btn-primary { background: var(--c-primary); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+.btn-secondary { background: #eee; color: #333; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
