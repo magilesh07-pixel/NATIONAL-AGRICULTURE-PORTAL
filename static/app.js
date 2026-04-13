@@ -287,6 +287,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const transList = document.getElementById('transaction-list');
     const totalBalanceEl = document.getElementById('total-balance');
 
+    async function loadTransactions() {
+        try {
+            const response = await fetch('/transactions');
+            const data = await response.json();
+            
+            transList.innerHTML = '';
+            let total = 0;
+            
+            data.forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'f-item';
+                const isExpense = t.type === 'expense';
+                const color = isExpense ? '#c62828' : '#2e7d32';
+                const prefix = isExpense ? '-' : '+';
+                
+                item.innerHTML = `<span>${t.date}</span><span>${t.description}</span><b style="color: ${color};">${prefix} ₹${t.amount.toLocaleString()}</b>`;
+                transList.appendChild(item); // Note: response is ORDER BY id DESC, so append is correct if we want newest first at top, but actually appendChild puts it at bottom. The query is DESC so append is fine if we want newest at top of list in UI. Wait, SQL is DESC, so first item is newest. appendChild(item) will put newest at top if it's the first one added.
+                
+                total += isExpense ? -t.amount : t.amount;
+            });
+            
+            totalBalanceEl.textContent = `₹${total.toLocaleString()}`;
+        } catch (e) {
+            console.error("Failed to load transactions", e);
+        }
+    }
+
+    // Call on load
+    loadTransactions();
+
     if (addExpenseBtn) {
         addExpenseBtn.addEventListener('click', () => modal.classList.add('active'));
     }
@@ -301,29 +331,36 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
 
     if (saveEntryBtn) {
-        saveEntryBtn.addEventListener('click', () => {
+        saveEntryBtn.addEventListener('click', async () => {
             const desc = document.getElementById('exp-desc').value.trim();
             const amountStr = document.getElementById('exp-amount').value.trim();
             const type = document.getElementById('exp-type').value;
 
             if (desc && amountStr) {
                 const amount = parseInt(amountStr);
-                const item = document.createElement('div');
-                item.className = 'f-item';
                 const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
                 
-                const isExpense = type === 'expense';
-                const color = isExpense ? '#c62828' : '#2e7d32';
-                const prefix = isExpense ? '-' : '+';
+                const newEntry = {
+                    date: date,
+                    description: desc,
+                    amount: amount,
+                    type: type
+                };
 
-                item.innerHTML = `<span>${date}</span><span>${desc}</span><b style="color: ${color};">${prefix} ₹${amount.toLocaleString()}</b>`;
-                transList.prepend(item);
-
-                const current = parseInt(totalBalanceEl.textContent.replace(/[^\d]/g, ''));
-                const next = isExpense ? (current - amount) : (current + amount);
-                totalBalanceEl.textContent = `₹${next.toLocaleString()}`;
-
-                closeModal();
+                try {
+                    const response = await fetch('/transactions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newEntry)
+                    });
+                    
+                    if (response.ok) {
+                        loadTransactions();
+                        closeModal();
+                    }
+                } catch (e) {
+                    console.error("Failed to save transaction", e);
+                }
             }
         });
     }

@@ -5,9 +5,35 @@ import os
 import io
 import random
 
+import sqlite3
+
 app = Flask(__name__)
 app.secret_key = "vivasayi_master_brain_shield_2025"
 CORS(app)
+
+DB_PATH = 'database.db'
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS transactions
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  date TEXT,
+                  description TEXT,
+                  amount INTEGER,
+                  type TEXT)''')
+    c.execute('SELECT COUNT(*) FROM transactions')
+    if c.fetchone()[0] == 0:
+        defaults = [
+            ('12 Apr', 'Fertilizer Purchase', 4200, 'expense'),
+            ('10 Apr', 'Seed Acquisition', 2800, 'expense'),
+            ('08 Apr', 'Market Grain Sale', 15500, 'income')
+        ]
+        c.executemany('INSERT INTO transactions (date, description, amount, type) VALUES (?, ?, ?, ?)', defaults)
+    conn.commit()
+    conn.close()
+
+init_db()
 
 # ── Dynamic Clinical & Tactical Knowledge Pool ──
 KNOWLEDGE_BASE = {
@@ -108,6 +134,34 @@ def diagnose():
             "treatment": f"<b>Infection Density: {intel['severity']}%</b><br><br><b>Protocol:</b> {res['treat']}"
         }
     })
+
+@app.route('/transactions', methods=['GET', 'POST'])
+def transactions():
+    if request.method == 'POST':
+        data = request.json
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute('INSERT INTO transactions (date, description, amount, type) VALUES (?, ?, ?, ?)',
+                  (data['date'], data['description'], data['amount'], data['type']))
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success"})
+    
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT date, description, amount, type FROM transactions ORDER BY id DESC')
+    rows = c.fetchall()
+    conn.close()
+    
+    trans_list = []
+    for row in rows:
+        trans_list.append({
+            "date": row[0],
+            "description": row[1],
+            "amount": row[2],
+            "type": row[3]
+        })
+    return jsonify(trans_list)
 
 if __name__ == '__main__':
     app.run(debug=True)
